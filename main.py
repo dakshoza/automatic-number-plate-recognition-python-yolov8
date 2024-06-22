@@ -5,6 +5,7 @@ import util
 from sort.sort import *
 from util import get_car, read_license_plate, write_csv
 
+from datetime import datetime
 
 results = {}
 
@@ -17,7 +18,14 @@ license_plate_detector = YOLO('./models/license_plate_detector.pt')
 # load video
 cap = cv2.VideoCapture('./sample.mp4')
 
-vehicles = [2, 3, 5, 7]
+# vehicles = [2, 3, 5, 7]
+
+vehicles = {
+    2: 'car',
+    3: 'motorcycle',
+    5: 'bus',
+    7: 'truck'
+}
 
 # read frames
 frame_nmr = -1
@@ -26,13 +34,18 @@ while ret:
     frame_nmr += 1
     ret, frame = cap.read()
     if ret:
+        if frame_nmr > 1000:
+            break
         results[frame_nmr] = {}
+
+        current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
         # detect vehicles
         detections = coco_model(frame)[0]
         detections_ = []
         for detection in detections.boxes.data.tolist():
-            x1, y1, x2, y2, score, class_id = detection
-            if int(class_id) in vehicles:
+            x1, y1, x2, y2, score, vehicle_id = detection
+            if int(vehicle_id) in vehicles.keys():
                 detections_.append([x1, y1, x2, y2, score])
 
         # track vehicles
@@ -59,11 +72,17 @@ while ret:
                 license_plate_text, license_plate_text_score = read_license_plate(license_plate_crop_thresh)
 
                 if license_plate_text is not None:
+                    
+                    vehicle_type = vehicles.get(int(vehicle_id), 'unknown')
+                                        
                     results[frame_nmr][car_id] = {'car': {'bbox': [xcar1, ycar1, xcar2, ycar2]},
                                                   'license_plate': {'bbox': [x1, y1, x2, y2],
                                                                     'text': license_plate_text,
                                                                     'bbox_score': score,
-                                                                    'text_score': license_plate_text_score}}
+                                                                    'text_score': license_plate_text_score},
+                                                   'vehicle_type': vehicle_type,
+                                                   'recorded_time': current_time}
 
 # write results
 write_csv(results, './test.csv')
+
