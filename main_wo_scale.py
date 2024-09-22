@@ -104,17 +104,6 @@ def main():
                 track_id = vehicle['id']
 
                 # add scale coords here?
-                vehicle['bbox'] = [
-                    scale_coordinates(vehicle['bbox'][0], vehicle['bbox'][1], 2),
-                    scale_coordinates(vehicle['bbox'][2], vehicle['bbox'][3], 2)
-                ]
-
-                # Scale license plate bounding box coordinates if detected
-                if license_plate:
-                    license_plate['bbox'] = [
-                        scale_coordinates(license_plate['bbox'][0], license_plate['bbox'][1], 2),
-                        scale_coordinates(license_plate['bbox'][2], license_plate['bbox'][3], 2)
-                    ]
                 # Initialize entry and exit points as None if this is a new tracked object
                 if track_id not in object_points:
                     object_points[track_id] = {'entry': None, 'exit': None}

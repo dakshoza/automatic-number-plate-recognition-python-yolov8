@@ -1,0 +1,23 @@
+[
+    {
+      "start": [535, 6],
+      "end": [10, 459],
+      "direction": "North"
+    },
+    {
+      "start": [561, 7],
+      "end": [1905, 285],
+      "direction": "West"
+    },
+    {
+      "start": [10, 495],
+      "end": [1518, 1075],
+      "direction": "East"
+    },
+    {
+      "start": [1575, 1078],
+      "end": [1908, 378],
+      "direction": "South"
+    }
+  ]
+  

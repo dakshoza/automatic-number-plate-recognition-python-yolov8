@@ -1,31 +1,38 @@
-import numpy as np
+import csv
 
-def point_crossed_line(point, line_start, line_end, buffer=5):
-    x, y = point
-    x1, y1 = line_start
-    x2, y2 = line_end
-    
-    # Calculate the distance from the point to the line
-    numerator = abs((y2-y1)*x - (x2-x1)*y + x2*y1 - y2*x1)
-    denominator = np.sqrt((y2-y1)**2 + (x2-x1)**2)
-    distance = numerator / denominator
-    
-    # Check if the point is close enough to the line
-    if distance > buffer:
-        return False
-    
-    # Check if the point is within the line segment
-    dot_product = (x - x1) * (x2 - x1) + (y - y1) * (y2 - y1)
-    line_length_squared = (x2 - x1)**2 + (y2 - y1)**2
-    
-    if dot_product < 0 or dot_product > line_length_squared:
-        return False
-    
-    return True
+# Given dictionary
+data_dict = {
+    1: {'entry': 'East', 'exit': 'East'}, 
+    2: {'entry': 'South', 'exit': 'South'}, 
+    3: {'entry': None, 'exit': None}, 
+    4: {'entry': None, 'exit': None}, 
+    5: {'entry': None, 'exit': None}, 
+    6: {'entry': None, 'exit': None}, 
+    7: {'entry': 'North', 'exit': 'East'}, 
+    8: {'entry': 'North', 'exit': 'East'}, 
+    9: {'entry': 'North', 'exit': 'North'}, 
+    10: {'entry': None, 'exit': None}, 
+    11: {'entry': None, 'exit': None}, 
+    12: {'entry': None, 'exit': None}, 
+    13: {'entry': 'North', 'exit': 'North'}, 
+    14: {'entry': 'West', 'exit': 'West'}, 
+    15: {'entry': None, 'exit': None}
+}
 
+# Write the dictionary to a CSV file
+csv_file = "output.csv"
 
-point = (1,1)
-line_start = (0,0)
-line_end = (8,0)
+# Define the headers
+headers = ['track_id', 'entry', 'exit']
 
-print(point_crossed_line(point, line_start, line_end, buffer=0))
+with open(csv_file, 'w', newline='') as file:
+    writer = csv.writer(file)
+    
+    # Write the header row
+    writer.writerow(headers)
+    
+    # Write the data rows
+    for track_id, points in data_dict.items():
+        writer.writerow([track_id, points['entry'], points['exit']])
+
+print(f"Data has been written to {csv_file}")
